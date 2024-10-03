@@ -1,0 +1,27 @@
+services:
+  postgresql:
+    build:
+      context: ./internal/postgres
+      dockerfile: Dockerfile
+    ports:
+      - "5432:5432"
+    networks:
+      mynetwork:
+    environment:
+      - TZ=Europe/Moscow
+  matharena:
+    build: .
+    ports:
+      - "8080:8080"
+    networks:
+      mynetwork:
+    environment:
+      - TZ=Europe/Moscow
+      - DB_CONN_STR=user=postgres dbname=postgres host=postgresql port=5432 sslmode=disable
+      - TOKEN_EXPIRATION_TIME=48 # hours
+      - TOKEN_SECRET=secret
+      - SALT_LENGTH=16
+
+networks:
+  mynetwork:
+    driver: bridge
