@@ -13,3 +13,5 @@ FROM gcr.io/distroless/static-debian12
 WORKDIR /home/nonroot/
 USER nonroot:nonroot
 COPY --from=build /usr/local/bin/matharena ./
+
+ENTRYPOINT ["./matharena"]
