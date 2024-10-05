@@ -22,8 +22,6 @@ type ErrorWriter interface {
 }
 
 // Logger is an interface that defines the methods for the logger.
-//
-//go:generate mockery --name Logger --output=./ --filename=mocks/logger.go --with-expecter
 type Logger interface {
 	Error(msg interface{}, keyvals ...interface{})
 }
