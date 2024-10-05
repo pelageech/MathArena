@@ -50,11 +50,6 @@ func (d *PSQLDatabase) InsertUser(ctx context.Context, username, salt, hash, ema
 		return 0, fmt.Errorf("unable to insert user in InsertUser: %w", err)
 	}
 
-	_, err := d.Exec(ctx, "INSERT INTO user_info (user_id, max_box) VALUES ($1, $2)", id, 4)
-	if err != nil {
-		return 0, fmt.Errorf("unable to insert user info: %w", err)
-	}
-
 	return id, nil
 }
 
