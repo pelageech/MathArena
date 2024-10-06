@@ -21,18 +21,17 @@ func (_m *UserCredentials) EXPECT() *UserCredentials_Expecter {
 	return &UserCredentials_Expecter{mock: &_m.Mock}
 }
 
-// GetSaltAndHash provides a mock function with given fields: ctx, username
-func (_m *UserCredentials) GetSaltAndHash(ctx context.Context, username string) (string, string, error) {
+// GetHashedPassword provides a mock function with given fields: ctx, username
+func (_m *UserCredentials) GetHashedPassword(ctx context.Context, username string) (string, error) {
 	ret := _m.Called(ctx, username)
 
 	if len(ret) == 0 {
-		panic("no return value specified for GetSaltAndHash")
+		panic("no return value specified for GetHashedPassword")
 	}
 
 	var r0 string
-	var r1 string
-	var r2 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (string, string, error)); ok {
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (string, error)); ok {
 		return rf(ctx, username)
 	}
 	if rf, ok := ret.Get(0).(func(context.Context, string) string); ok {
@@ -41,46 +40,40 @@ func (_m *UserCredentials) GetSaltAndHash(ctx context.Context, username string) 
 		r0 = ret.Get(0).(string)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, string) string); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
 		r1 = rf(ctx, username)
 	} else {
-		r1 = ret.Get(1).(string)
+		r1 = ret.Error(1)
 	}
 
-	if rf, ok := ret.Get(2).(func(context.Context, string) error); ok {
-		r2 = rf(ctx, username)
-	} else {
-		r2 = ret.Error(2)
-	}
-
-	return r0, r1, r2
+	return r0, r1
 }
 
-// UserCredentials_GetSaltAndHash_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetSaltAndHash'
-type UserCredentials_GetSaltAndHash_Call struct {
+// UserCredentials_GetHashedPassword_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetHashedPassword'
+type UserCredentials_GetHashedPassword_Call struct {
 	*mock.Call
 }
 
-// GetSaltAndHash is a helper method to define mock.On call
+// GetHashedPassword is a helper method to define mock.On call
 //   - ctx context.Context
 //   - username string
-func (_e *UserCredentials_Expecter) GetSaltAndHash(ctx interface{}, username interface{}) *UserCredentials_GetSaltAndHash_Call {
-	return &UserCredentials_GetSaltAndHash_Call{Call: _e.mock.On("GetSaltAndHash", ctx, username)}
+func (_e *UserCredentials_Expecter) GetHashedPassword(ctx interface{}, username interface{}) *UserCredentials_GetHashedPassword_Call {
+	return &UserCredentials_GetHashedPassword_Call{Call: _e.mock.On("GetHashedPassword", ctx, username)}
 }
 
-func (_c *UserCredentials_GetSaltAndHash_Call) Run(run func(ctx context.Context, username string)) *UserCredentials_GetSaltAndHash_Call {
+func (_c *UserCredentials_GetHashedPassword_Call) Run(run func(ctx context.Context, username string)) *UserCredentials_GetHashedPassword_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string))
 	})
 	return _c
 }
 
-func (_c *UserCredentials_GetSaltAndHash_Call) Return(salt string, hash string, err error) *UserCredentials_GetSaltAndHash_Call {
-	_c.Call.Return(salt, hash, err)
+func (_c *UserCredentials_GetHashedPassword_Call) Return(hashedPassword string, err error) *UserCredentials_GetHashedPassword_Call {
+	_c.Call.Return(hashedPassword, err)
 	return _c
 }
 
-func (_c *UserCredentials_GetSaltAndHash_Call) RunAndReturn(run func(context.Context, string) (string, string, error)) *UserCredentials_GetSaltAndHash_Call {
+func (_c *UserCredentials_GetHashedPassword_Call) RunAndReturn(run func(context.Context, string) (string, error)) *UserCredentials_GetHashedPassword_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -264,9 +257,9 @@ func (_c *UserCredentials_HasEmailOrUsername_Call) RunAndReturn(run func(context
 	return _c
 }
 
-// InsertUser provides a mock function with given fields: ctx, username, salt, hash, email
-func (_m *UserCredentials) InsertUser(ctx context.Context, username string, salt string, hash string, email string) (int, error) {
-	ret := _m.Called(ctx, username, salt, hash, email)
+// InsertUser provides a mock function with given fields: ctx, username, hashedPassword, email
+func (_m *UserCredentials) InsertUser(ctx context.Context, username string, hashedPassword string, email string) (int, error) {
+	ret := _m.Called(ctx, username, hashedPassword, email)
 
 	if len(ret) == 0 {
 		panic("no return value specified for InsertUser")
@@ -274,17 +267,17 @@ func (_m *UserCredentials) InsertUser(ctx context.Context, username string, salt
 
 	var r0 int
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, string, string, string) (int, error)); ok {
-		return rf(ctx, username, salt, hash, email)
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, string) (int, error)); ok {
+		return rf(ctx, username, hashedPassword, email)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string, string, string, string) int); ok {
-		r0 = rf(ctx, username, salt, hash, email)
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, string) int); ok {
+		r0 = rf(ctx, username, hashedPassword, email)
 	} else {
 		r0 = ret.Get(0).(int)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, string, string, string, string) error); ok {
-		r1 = rf(ctx, username, salt, hash, email)
+	if rf, ok := ret.Get(1).(func(context.Context, string, string, string) error); ok {
+		r1 = rf(ctx, username, hashedPassword, email)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -300,16 +293,15 @@ type UserCredentials_InsertUser_Call struct {
 // InsertUser is a helper method to define mock.On call
 //   - ctx context.Context
 //   - username string
-//   - salt string
-//   - hash string
+//   - hashedPassword string
 //   - email string
-func (_e *UserCredentials_Expecter) InsertUser(ctx interface{}, username interface{}, salt interface{}, hash interface{}, email interface{}) *UserCredentials_InsertUser_Call {
-	return &UserCredentials_InsertUser_Call{Call: _e.mock.On("InsertUser", ctx, username, salt, hash, email)}
+func (_e *UserCredentials_Expecter) InsertUser(ctx interface{}, username interface{}, hashedPassword interface{}, email interface{}) *UserCredentials_InsertUser_Call {
+	return &UserCredentials_InsertUser_Call{Call: _e.mock.On("InsertUser", ctx, username, hashedPassword, email)}
 }
 
-func (_c *UserCredentials_InsertUser_Call) Run(run func(ctx context.Context, username string, salt string, hash string, email string)) *UserCredentials_InsertUser_Call {
+func (_c *UserCredentials_InsertUser_Call) Run(run func(ctx context.Context, username string, hashedPassword string, email string)) *UserCredentials_InsertUser_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string), args[2].(string), args[3].(string), args[4].(string))
+		run(args[0].(context.Context), args[1].(string), args[2].(string), args[3].(string))
 	})
 	return _c
 }
@@ -319,7 +311,7 @@ func (_c *UserCredentials_InsertUser_Call) Return(_a0 int, _a1 error) *UserCrede
 	return _c
 }
 
-func (_c *UserCredentials_InsertUser_Call) RunAndReturn(run func(context.Context, string, string, string, string) (int, error)) *UserCredentials_InsertUser_Call {
+func (_c *UserCredentials_InsertUser_Call) RunAndReturn(run func(context.Context, string, string, string) (int, error)) *UserCredentials_InsertUser_Call {
 	_c.Call.Return(run)
 	return _c
 }

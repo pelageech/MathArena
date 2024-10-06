@@ -48,7 +48,7 @@ func TestAuthorization(t *testing.T) {
 			Return(false, nil)
 
 		cred.EXPECT().
-			InsertUser(mock.Anything, "aboba", mock.Anything, mock.Anything, "aboba@g.nsu.ru").
+			InsertUser(mock.Anything, "aboba", mock.Anything, "aboba@g.nsu.ru").
 			Return(0, nil)
 
 		req := httptest.NewRequest(http.MethodPost, "/signup", bytes.NewReader(b))

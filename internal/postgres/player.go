@@ -14,7 +14,7 @@ func (d *PSQLDatabase) GetUserInfo(ctx context.Context, userId int) (string, str
 	var username string
 	var email string
 
-	err := d.QueryRow(ctx, "SELECT username, email FROM user_credentials WHERE user_id = $1", userId).Scan(&username, &email)
+	err := d.QueryRow(ctx, "SELECT username, email FROM players WHERE id = $1", userId).Scan(&username, &email)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return "", "", ErrUserNotFound
@@ -30,7 +30,7 @@ func (d *PSQLDatabase) GetUserInfo(ctx context.Context, userId int) (string, str
 func (d *PSQLDatabase) HasEmailOrUsername(ctx context.Context, username, email string) (bool, error) {
 	var count int
 
-	err := d.QueryRow(ctx, "SELECT COUNT(*) FROM user_credentials WHERE username = $1 OR email = $2", username, email).Scan(&count)
+	err := d.QueryRow(ctx, "SELECT COUNT(*) FROM players WHERE username = $1 OR email = $2", username, email).Scan(&count)
 	if err != nil {
 		return false, fmt.Errorf("unable to count rows in HasEmailOrUsername: %w", err)
 	}
@@ -42,8 +42,13 @@ func (d *PSQLDatabase) HasEmailOrUsername(ctx context.Context, username, email s
 }
 
 // InsertUser inserts a new user into the database.
-func (d *PSQLDatabase) InsertUser(ctx context.Context, username, salt, hash, email string) (int, error) {
-	row := d.QueryRow(ctx, "INSERT INTO user_credentials (username, salt, hash, email) VALUES ($1, $2, $3, $4) RETURNING user_id", username, salt, hash, email)
+func (d *PSQLDatabase) InsertUser(ctx context.Context, username, hashedPassword, email string) (int, error) {
+	row := d.QueryRow(ctx, `
+INSERT INTO players (email, username, hashed_password)
+VALUES (:email, :username, :hashed_password) RETURNING id`,
+		sql.Named("email", email),
+		sql.Named("username", username),
+		sql.Named("hashed_password", hashedPassword))
 	var id int
 
 	if err := row.Scan(&id); err != nil {
@@ -53,25 +58,25 @@ func (d *PSQLDatabase) InsertUser(ctx context.Context, username, salt, hash, ema
 	return id, nil
 }
 
-// GetSaltAndHash returns salt and hash for the given username.
-func (d *PSQLDatabase) GetSaltAndHash(ctx context.Context, username string) (salt, hash string, err error) {
-	err = d.QueryRow(ctx, "SELECT salt, hash FROM user_credentials WHERE username = $1", username).Scan(&salt, &hash)
+// GetHashedPassword returns salt and hash for the given username.
+func (d *PSQLDatabase) GetHashedPassword(ctx context.Context, username string) (hashedPassword string, err error) {
+	err = d.QueryRow(ctx, "SELECT hashed_password FROM players WHERE username = $1", username).Scan(&hashedPassword)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return "", "", ErrUserNotFound
+			return "", ErrUserNotFound
 		}
 
-		return "", "", fmt.Errorf("unable to get salt and hash in GetSaltAndHash: %w", err)
+		return "", fmt.Errorf("unable to get salt and hash in GetHashedPassword: %w", err)
 	}
 
-	return salt, hash, nil
+	return hashedPassword, nil
 }
 
 // GetUserID returns user id for the given username.
 func (d *PSQLDatabase) GetUserID(ctx context.Context, username string) (int64, error) {
 	var userID int64
 
-	err := d.QueryRow(ctx, "SELECT user_id FROM user_credentials WHERE username = $1", username).Scan(&userID)
+	err := d.QueryRow(ctx, "SELECT id FROM players WHERE username = $1", username).Scan(&userID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return 0, ErrUserNotFound
@@ -84,7 +89,7 @@ func (d *PSQLDatabase) GetUserID(ctx context.Context, username string) (int64, e
 }
 
 func (d *PSQLDatabase) GetAllIds(ctx context.Context) ([]int, error) {
-	rows, err := d.Query(ctx, "SELECT user_id FROM user_credentials")
+	rows, err := d.Query(ctx, "SELECT id FROM players")
 	if err != nil {
 		d.Logger().Errorf("unable to get all user credentials: %v", err)
 		return nil, fmt.Errorf("unable to get all user credentials: %w", err)
