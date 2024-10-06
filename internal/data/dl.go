@@ -2,8 +2,6 @@ package data
 
 import (
 	"context"
-	"crypto/rand"
-	"encoding/base64"
 	"fmt"
 	"time"
 
@@ -21,8 +19,8 @@ var ErrEmailOrUsernameExists = fmt.Errorf("user with this email or username alre
 //go:generate mockery --name UserCredentials --output=./ --filename=mocks/userCredentials.go --with-expecter
 type UserCredentials interface {
 	HasEmailOrUsername(ctx context.Context, username, email string) (bool, error)
-	GetSaltAndHash(ctx context.Context, username string) (salt, hash string, err error)
-	InsertUser(ctx context.Context, username, salt, hash, email string) (int, error)
+	GetHashedPassword(ctx context.Context, username string) (hashedPassword string, err error)
+	InsertUser(ctx context.Context, username, hashedPassword, email string) (int, error)
 	GetUserInfo(ctx context.Context, userId int) (username, email string, err error)
 	GetUserID(ctx context.Context, username string) (int64, error)
 }
@@ -79,30 +77,18 @@ func (d *Datalayer) isEmailOrUsernameExists(ctx context.Context, username, email
 
 // isPasswordCorrect is a helper function to check if the given password is correct for the given email.
 func (d *Datalayer) isPasswordCorrect(ctx context.Context, username, password string) (bool, error) {
-	salt, hash, err := d.db.GetSaltAndHash(ctx, username)
+	hashedPassword, err := d.db.GetHashedPassword(ctx, username)
 	if err != nil {
 		return false, fmt.Errorf("unable to get salt and hash in isPasswordCorrect: %w", err)
 	}
 
 	// Compare the password with the hash
-	err = bcrypt.CompareHashAndPassword([]byte(hash), []byte(password+salt))
+	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 	if err != nil {
 		return false, nil
 	}
 
 	return true, nil
-}
-
-func (d *Datalayer) generateSalt() (string, error) {
-	saltBytes := make([]byte, d.saltLength)
-
-	_, err := rand.Read(saltBytes)
-	if err != nil {
-		return "", err
-	}
-
-	salt := base64.URLEncoding.EncodeToString(saltBytes)
-	return salt, nil
 }
 
 // generateToken is a helper function to generate a JWT token.
@@ -139,19 +125,13 @@ func (d *Datalayer) CreateUser(ctx context.Context, user models.User) error {
 		return ErrEmailOrUsernameExists
 	}
 
-	// Generate salt
-	salt, err := d.generateSalt()
-	if err != nil {
-		return fmt.Errorf("unable to generate salt in CreateUser: %w", err)
-	}
-
 	// Hash password
-	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password+salt), bcrypt.DefaultCost)
+	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return fmt.Errorf("unable to hash password in CreateUser: %w", err)
 	}
 
-	_, err = d.db.InsertUser(ctx, user.Username, salt, string(hash), user.Email)
+	_, err = d.db.InsertUser(ctx, user.Username, string(hash), user.Email)
 	if err != nil {
 		return fmt.Errorf("unable to insert user in CreateUser: %w", err)
 	}
