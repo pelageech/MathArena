@@ -24,12 +24,24 @@ type Fact struct {
 	Fact ExpressionInt `json:"fact"`
 }
 
-func (n Fact) Calculate() int {
-	f := 1
-	for i := 1; i <= n.Fact.Calculate(); i++ {
-		f *= i
+var _facts = []int{1}
+
+func init() {
+	for i := 1; i < 21; i++ {
+		_facts = append(_facts, _facts[i-1]*i)
 	}
-	return f
+}
+
+func (n Fact) Calculate() int {
+	c := n.Fact.Calculate()
+	if c < 0 {
+		panic("argument is below zero")
+	}
+	if c > 20 {
+		panic("int overflow")
+	}
+
+	return _facts[c]
 }
 
 func (n Fact) Marshal() []byte {
