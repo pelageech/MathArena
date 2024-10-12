@@ -17,9 +17,6 @@ func (n Num) Calculate() int {
 }
 
 func (n Num) Marshal() []byte {
-	if n < 0 {
-		return []byte("(" + strconv.Itoa(int(n)) + ")")
-	}
 	return []byte(strconv.Itoa(int(n)))
 }
 
@@ -66,11 +63,19 @@ func (s Sum) Marshal() []byte {
 	}
 
 	for _, x := range s[1:] {
-		b.WriteByte('+')
 		switch v := x.(type) {
-		case Sum, Num:
+		case Sum:
+			b.WriteByte('+')
 			b.Write(v.Marshal())
+		case Num:
+			if v.Calculate() < 0 {
+				b.Write(v.Marshal())
+			} else {
+				b.WriteByte('+')
+				b.Write(v.Marshal())
+			}
 		default:
+			b.WriteByte('+')
 			b.WriteByte('(')
 			b.Write(v.Marshal())
 			b.WriteByte(')')

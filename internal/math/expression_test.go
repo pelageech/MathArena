@@ -21,7 +21,7 @@ func TestExpressionJSON(t *testing.T) {
 		}, Num(1),
 	}
 
-	if string(sum.Marshal()) != "23+10+90+(-9)+1" {
-		t.Fatalf("expected: `%v`, got: `%v`", "23+10+90+(-9)+1", sum.Marshal())
+	if string(sum.Marshal()) != "23+10+90-9+1" {
+		t.Fatalf("expected: `%v`, got: `%v`", "23+10+90-9+1", string(sum.Marshal()))
 	}
 }
