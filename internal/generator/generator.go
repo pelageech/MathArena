@@ -1,15 +1,10 @@
 package generator
 
 import (
-	"errors"
-	"fmt"
 	"math/rand/v2"
-	"strconv"
 
 	"github.com/pelageech/matharena/internal/math"
 )
-
-var ErrDifficultyNotRecognized = errors.New("difficulty not recognized")
 
 type Difficulty int
 
@@ -31,23 +26,14 @@ func (d Difficulty) String() string {
 	return "Unknown"
 }
 
-type Generator struct {
-	difficulty Difficulty
+type Generator interface {
+	Generate() math.ExpressionInt
+	Difficulty() Difficulty
 }
 
-func New(difficulty Difficulty) *Generator {
-	return &Generator{difficulty}
-}
+type EasyGenerator struct{}
 
-func (g *Generator) Generate() (math.ExpressionInt, error) {
-	switch g.difficulty {
-	case Easy:
-		return g.generateEasy(), nil
-	}
-	return nil, fmt.Errorf("%s: %w", strconv.Quote(g.difficulty.String()), ErrDifficultyNotRecognized)
-}
-
-func (g *Generator) generateEasy() math.ExpressionInt {
+func (g *EasyGenerator) Generate() math.ExpressionInt {
 	n := 2 + rand.N(2)
 
 	sum := math.Sum{}
@@ -57,4 +43,8 @@ func (g *Generator) generateEasy() math.ExpressionInt {
 	}
 
 	return sum
+}
+
+func (g *EasyGenerator) Difficulty() Difficulty {
+	return Easy
 }
