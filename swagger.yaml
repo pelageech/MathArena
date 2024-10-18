@@ -12,6 +12,34 @@ definitions:
         title: GenericError is a generic error message returned by a server.
         type: object
         x-go-package: github.com/pelageech/matharena/internal/models
+    SignInResponse:
+        properties:
+            authorization:
+                description: Authorization token.
+                example: Bearer rhdfiugreuherugtherutgherutheruthyeruthyerutheuty478t8475t87845y8574y745ty57s
+                type: string
+                x-go-name: Authorization
+        title: SignInResponse is a struct that defines the response body for the sign-in endpoint.
+        type: object
+        x-go-package: github.com/pelageech/matharena/internal/models
+    signInRequest:
+        properties:
+            password:
+                description: Password of the user.
+                example: whoAmIToJudgey6458yt875yt8754ytierytiueuy
+                type: string
+                x-go-name: Password
+            username:
+                description: Username of the user.
+                example: meliponeech
+                type: string
+                x-go-name: Username
+        required:
+            - username
+            - password
+        type: object
+        x-go-name: SignInRequest
+        x-go-package: github.com/pelageech/matharena/internal/models
     signUpRequest:
         properties:
             email:
@@ -44,6 +72,34 @@ info:
     title: describes models for application.
     version: 0.0.1
 paths:
+    /api/signin:
+        post:
+            consumes:
+                - application/json
+            operationId: SignIn
+            parameters:
+                - description: Sign in request.
+                  in: body
+                  name: request
+                  required: true
+                  schema:
+                    $ref: '#/definitions/signInRequest'
+                    description: Sign in request.
+                    type: object
+            produces:
+                - application/json
+            responses:
+                "200":
+                    $ref: '#/responses/signInOkResponse'
+                "400":
+                    $ref: '#/responses/signInBadRequestError'
+                "401":
+                    $ref: '#/responses/signInUnauthorizedError'
+                "500":
+                    $ref: '#/responses/signInInternalServerError'
+            schemes:
+                - http
+            summary: Signs in a user.
     /api/signup:
         post:
             consumes:
@@ -75,6 +131,22 @@ paths:
 produces:
     - application/json
 responses:
+    signInBadRequestError:
+        description: ""
+        schema:
+            $ref: '#/definitions/GenericError'
+    signInInternalServerError:
+        description: ""
+        schema:
+            $ref: '#/definitions/GenericError'
+    signInOkResponse:
+        description: ""
+        schema:
+            $ref: '#/definitions/SignInResponse'
+    signInUnauthorizedError:
+        description: ""
+        schema:
+            $ref: '#/definitions/GenericError'
     signUpBadRequestError:
         description: ""
         schema:

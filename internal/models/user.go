@@ -21,18 +21,27 @@ type UserInfo struct {
 	Email    string
 }
 
+// swagger:model signInRequest
 // SignInRequest is a struct that defines the request body for the sign-in endpoint.
 type SignInRequest struct {
 	// Username of the user.
+	//
+	// required: true
+	// example: meliponeech
 	Username string `json:"username"`
 
 	// Password of the user.
+	//
+	// required: true
+	// example: whoAmIToJudgey6458yt875yt8754ytierytiueuy
 	Password string `json:"password"`
 }
 
 // SignInResponse is a struct that defines the response body for the sign-in endpoint.
 type SignInResponse struct {
 	// Authorization token.
+	//
+	// example: Bearer rhdfiugreuherugtherutgherutheruthyeruthyerutheuty478t8475t87845y8574y745ty57s
 	Authorization string `json:"authorization"`
 }
 

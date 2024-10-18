@@ -187,6 +187,31 @@ func validate(req SignUpRequest) error {
 	return nil
 }
 
+// swagger:route POST /api/signin SignIn
+// Signs in a user.
+//
+// Consumes:
+// - application/json
+//
+// Produces:
+// - application/json
+//
+// Schemes: http
+//
+// Parameters:
+// + name: request
+//   in: body
+//   description: Sign in request.
+//	 required: true
+//	 type: signInRequest
+//
+//
+// Responses:
+// 200: signInOkResponse
+// 400: signInBadRequestError
+// 401: signInUnauthorizedError
+// 500: signInInternalServerError
+
 // SignIn is a handler for the sign-in endpoint.
 func (a *Authorization) SignIn(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")

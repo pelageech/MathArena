@@ -38,3 +38,28 @@ type InternalServerError struct {
 	// in: body
 	Body models.GenericError
 }
+
+// swagger:response signInOkResponse
+type SignInOkResponse struct {
+	// Response with the authorization token.
+	// in: body
+	Body models.SignInResponse
+}
+
+// swagger:response signInBadRequestError
+type SignInBadRequestError struct {
+	// in: body
+	Body models.GenericError
+}
+
+// swagger:response signInUnauthorizedError
+type SignInUnauthorizedError struct {
+	// in: body
+	Body models.GenericError
+}
+
+// swagger:response signInInternalServerError
+type SignInInternalServerError struct {
+	// in: body
+	Body models.GenericError
+}
