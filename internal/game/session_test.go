@@ -37,25 +37,29 @@ func TestSession(t *testing.T) {
 
 	t.Run("10,correct", func(t *testing.T) {
 		clck.add(200 * time.Millisecond)
-		s.Answer(10, clck.now())
+		err := s.Answer(10, clck.now())
+		assert.NoError(t, err)
 		assert.Equal(t, 900*time.Millisecond, s.timeLeft)
 	})
 
 	t.Run("20,correct", func(t *testing.T) {
 		clck.add(500 * time.Millisecond)
-		s.Answer(20, clck.now())
+		err := s.Answer(20, clck.now())
+		assert.NoError(t, err)
 		assert.Equal(t, 500*time.Millisecond, s.timeLeft)
 	})
 
 	t.Run("30,incorrect", func(t *testing.T) {
 		clck.add(100 * time.Millisecond)
-		s.Answer(42, clck.now())
+		err := s.Answer(42, clck.now())
+		assert.ErrorIs(t, err, ErrAnswerIsIncorrect)
 		assert.Equal(t, 300*time.Millisecond, s.timeLeft)
 	})
 
 	t.Run("40,time left", func(t *testing.T) {
 		clck.add(300 * time.Millisecond)
-		s.Answer(40, clck.now())
+		err := s.Answer(40, clck.now())
+		assert.ErrorIs(t, err, ErrTimeIsLeft)
 		assert.Equal(t, time.Duration(0), s.timeLeft)
 		assert.Equal(t, clck.now(), s.finishTime)
 	})

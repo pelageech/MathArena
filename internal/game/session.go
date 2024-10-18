@@ -1,6 +1,7 @@
 package game
 
 import (
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
@@ -65,11 +66,16 @@ func NewSession(userID int, timeStart time.Duration, generator generator.Generat
 	return s
 }
 
-func (s *Session) Answer(answer int, timeNow time.Time) bool {
+var (
+	ErrAnswerIsIncorrect = errors.New("answer is incorrect")
+	ErrTimeIsLeft        = errors.New("time is left")
+)
+
+func (s *Session) Answer(answer int, timeNow time.Time) error {
 	s.updateTimeOnAnswer(timeNow)
 	// check if the user is late to answer
 	if !s.CheckTime(timeNow) {
-		return false
+		return ErrTimeIsLeft
 	}
 
 	defer s.updateExpression()
@@ -77,15 +83,15 @@ func (s *Session) Answer(answer int, timeNow time.Time) bool {
 	if answer != s.answer {
 		s.timeOnIncorrect()
 		if !s.CheckTime(timeNow) { // check after incorrect answer
-			return false
+			return ErrTimeIsLeft
 		}
-		return true
+		return ErrAnswerIsIncorrect
 	}
 
 	s.timeOnCorrect()
 	s.UpdateScore()
 
-	return true
+	return nil
 }
 
 func (s *Session) CheckTime(timeNow time.Time) bool {
