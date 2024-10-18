@@ -3,7 +3,7 @@ package generator
 import (
 	"math/rand/v2"
 
-	"github.com/pelageech/matharena/internal/math"
+	"github.com/pelageech/matharena/internal/game/math"
 )
 
 type Difficulty int
@@ -26,6 +26,7 @@ func (d Difficulty) String() string {
 	return "Unknown"
 }
 
+//go:generate mockery --name Generator --output=./ --filename=mocks/generator.go --with-expecter
 type Generator interface {
 	Generate() math.ExpressionInt
 	Difficulty() Difficulty
