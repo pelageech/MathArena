@@ -50,5 +50,7 @@ type GetUserInfoResponse struct {
 // GenericError is a generic error message returned by a server.
 type GenericError struct {
 	// The error message.
+	//
+	// example: No no no mister fish you won't go into tazik
 	Message string `json:"message"`
 }

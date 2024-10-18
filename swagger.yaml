@@ -1,0 +1,94 @@
+basePath: /
+consumes:
+    - application/json
+definitions:
+    GenericError:
+        properties:
+            message:
+                description: The error message.
+                example: No no no mister fish you won't go into tazik
+                type: string
+                x-go-name: Message
+        title: GenericError is a generic error message returned by a server.
+        type: object
+        x-go-package: github.com/pelageech/matharena/internal/models
+    signUpRequest:
+        properties:
+            email:
+                description: Email of the user.
+                example: user@example.com
+                type: string
+                x-go-name: Email
+            password:
+                description: Password of the user.
+                example: myVerySecurePassword123
+                type: string
+                x-go-name: Password
+            username:
+                description: Username of the user.
+                example: user123
+                type: string
+                x-go-name: Username
+        required:
+            - username
+            - email
+            - password
+        type: object
+        x-go-name: SignUpRequest
+        x-go-package: github.com/pelageech/matharena/internal/handlers
+info:
+    contact:
+        email: pelageech@mail.ru
+        name: Artyom Blaginin
+    description: Documentation for MathArena API.
+    title: describes models for application.
+    version: 0.0.1
+paths:
+    /api/signup:
+        post:
+            consumes:
+                - application/json
+            operationId: SignUp
+            parameters:
+                - description: Sign up request.
+                  in: body
+                  name: request
+                  required: true
+                  schema:
+                    $ref: '#/definitions/signUpRequest'
+                    description: Sign up request.
+                    type: object
+            produces:
+                - application/json
+            responses:
+                "201":
+                    $ref: '#/responses/signUpCreatedResponse'
+                "400":
+                    $ref: '#/responses/signUpBadRequestError'
+                "409":
+                    $ref: '#/responses/signUpConflictError'
+                "500":
+                    $ref: '#/responses/signUpInternalServerError'
+            schemes:
+                - http
+            summary: Creates a new user.
+produces:
+    - application/json
+responses:
+    signUpBadRequestError:
+        description: ""
+        schema:
+            $ref: '#/definitions/GenericError'
+    signUpConflictError:
+        description: ""
+        schema:
+            $ref: '#/definitions/GenericError'
+    signUpCreatedResponse:
+        description: ""
+    signUpInternalServerError:
+        description: ""
+        schema:
+            $ref: '#/definitions/GenericError'
+schemes:
+    - http
+swagger: "2.0"
