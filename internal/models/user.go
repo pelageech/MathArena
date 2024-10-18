@@ -49,6 +49,7 @@ type SignInResponse struct {
 type GetUserInfoRequest struct {
 }
 
+// swagger:model getUserInfoResponse
 // GetUserInfoResponse is a struct that defines the response body for the getUserInfo endpoint.
 type GetUserInfoResponse struct {
 	ID       int    `json:"id"`

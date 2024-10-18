@@ -255,6 +255,27 @@ func (a *Authorization) SignIn(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// swagger:route GET /api/user/{id} GetUserInfo
+// Get user info.
+//
+// Produces:
+// - application/json
+//
+// Schemes: http
+//
+// Parameters:
+// + name: id
+//   in: query
+//   description: UserId.
+//   required: true
+//   type: integer
+//
+// Responses:
+// 200: getUserInfoResponse
+// 400: getUserInfoBadRequestError
+// 404: getUserInfoNotFoundError
+// 500: getUserInfoInternalServerError
+
 // GetUserInfo is a handler for the get-user-info endpoint.
 func (a *Authorization) GetUserInfo(w http.ResponseWriter, r *http.Request) {
 	userID, err := strconv.Atoi(chi.URLParam(r, "id"))

@@ -22,6 +22,21 @@ definitions:
         title: SignInResponse is a struct that defines the response body for the sign-in endpoint.
         type: object
         x-go-package: github.com/pelageech/matharena/internal/models
+    getUserInfoResponse:
+        properties:
+            email:
+                type: string
+                x-go-name: Email
+            id:
+                format: int64
+                type: integer
+                x-go-name: ID
+            username:
+                type: string
+                x-go-name: Username
+        type: object
+        x-go-name: GetUserInfoResponse
+        x-go-package: github.com/pelageech/matharena/internal/models
     signInRequest:
         properties:
             password:
@@ -128,9 +143,46 @@ paths:
             schemes:
                 - http
             summary: Creates a new user.
+    /api/user/{id}:
+        get:
+            operationId: GetUserInfo
+            parameters:
+                - description: UserId.
+                  in: query
+                  name: id
+                  required: true
+                  type: integer
+            produces:
+                - application/json
+            responses:
+                "200":
+                    description: getUserInfoResponse
+                    schema:
+                        $ref: '#/definitions/getUserInfoResponse'
+                "400":
+                    $ref: '#/responses/getUserInfoBadRequestError'
+                "404":
+                    $ref: '#/responses/getUserInfoNotFoundError'
+                "500":
+                    $ref: '#/responses/getUserInfoInternalServerError'
+            schemes:
+                - http
+            summary: Get user info.
 produces:
     - application/json
 responses:
+    getUserInfoBadRequestError:
+        description: ""
+        schema:
+            $ref: '#/definitions/GenericError'
+    getUserInfoInternalServerError:
+        description: ""
+        schema:
+            $ref: '#/definitions/GenericError'
+    getUserInfoNotFoundError:
+        description: ""
+        schema:
+            $ref: '#/definitions/GenericError'
     signInBadRequestError:
         description: ""
         schema:

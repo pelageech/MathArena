@@ -63,3 +63,21 @@ type SignInInternalServerError struct {
 	// in: body
 	Body models.GenericError
 }
+
+// swagger:response getUserInfoBadRequestError
+type GetUserInfoBadRequestError struct {
+	// in: body
+	Body models.GenericError
+}
+
+// swagger:response getUserInfoNotFoundError
+type GetUserInfoNotFoundError struct {
+	// in: body
+	Body models.GenericError
+}
+
+// swagger:response getUserInfoInternalServerError
+type GetUserInfoInternalServerError struct {
+	// in: body
+	Body models.GenericError
+}
