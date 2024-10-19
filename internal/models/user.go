@@ -21,18 +21,27 @@ type UserInfo struct {
 	Email    string
 }
 
+// swagger:model signInRequest
 // SignInRequest is a struct that defines the request body for the sign-in endpoint.
 type SignInRequest struct {
 	// Username of the user.
+	//
+	// required: true
+	// example: meliponeech
 	Username string `json:"username"`
 
 	// Password of the user.
+	//
+	// required: true
+	// example: whoAmIToJudgey6458yt875yt8754ytierytiueuy
 	Password string `json:"password"`
 }
 
 // SignInResponse is a struct that defines the response body for the sign-in endpoint.
 type SignInResponse struct {
 	// Authorization token.
+	//
+	// example: Bearer rhdfiugreuherugtherutgherutheruthyeruthyerutheuty478t8475t87845y8574y745ty57s
 	Authorization string `json:"authorization"`
 }
 
@@ -40,6 +49,7 @@ type SignInResponse struct {
 type GetUserInfoRequest struct {
 }
 
+// swagger:model getUserInfoResponse
 // GetUserInfoResponse is a struct that defines the response body for the getUserInfo endpoint.
 type GetUserInfoResponse struct {
 	ID       int    `json:"id"`
@@ -50,5 +60,7 @@ type GetUserInfoResponse struct {
 // GenericError is a generic error message returned by a server.
 type GenericError struct {
 	// The error message.
+	//
+	// example: No no no mister fish you won't go into tazik
 	Message string `json:"message"`
 }

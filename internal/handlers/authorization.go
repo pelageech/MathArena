@@ -30,17 +30,53 @@ func NewAuthorization(data Datalayer, ew ErrorWriter, logger Logger) *Authorizat
 	}
 }
 
+// swagger:model signUpRequest
 // SignUpRequest is a struct that defines the request body for the sign-up endpoint.
 type SignUpRequest struct {
 	// Username of the user.
+	//
+	// required: true
+	// example: user123
 	Username string `json:"username"`
 
 	// Email of the user.
+	//
+	// required: true
+	// example: user@example.com
 	Email string `json:"email"`
 
 	// Password of the user.
+	//
+	// required: true
+	// example: myVerySecurePassword123
 	Password string `json:"password"`
 }
+
+// swagger:route POST /api/signup SignUp
+//
+// Creates a new user.
+//
+// Consumes:
+// - application/json
+//
+// Produces:
+// - application/json
+//
+// Schemes: http
+//
+// Parameters:
+// + name: request
+//	 in: body
+//   description: Sign up request.
+//   required: true
+//   type: signUpRequest
+//
+//
+// Responses:
+//  201: signUpCreatedResponse
+//  400: signUpBadRequestError
+//  409: signUpConflictError
+//  500: signUpInternalServerError
 
 // SignUp is a handler for the sign-up endpoint.
 func (a *Authorization) SignUp(w http.ResponseWriter, r *http.Request) {
@@ -151,6 +187,31 @@ func validate(req SignUpRequest) error {
 	return nil
 }
 
+// swagger:route POST /api/signin SignIn
+// Signs in a user.
+//
+// Consumes:
+// - application/json
+//
+// Produces:
+// - application/json
+//
+// Schemes: http
+//
+// Parameters:
+// + name: request
+//   in: body
+//   description: Sign in request.
+//	 required: true
+//	 type: signInRequest
+//
+//
+// Responses:
+// 200: signInOkResponse
+// 400: signInBadRequestError
+// 401: signInUnauthorizedError
+// 500: signInInternalServerError
+
 // SignIn is a handler for the sign-in endpoint.
 func (a *Authorization) SignIn(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -193,6 +254,27 @@ func (a *Authorization) SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+// swagger:route GET /api/user/{id} GetUserInfo
+// Get user info.
+//
+// Produces:
+// - application/json
+//
+// Schemes: http
+//
+// Parameters:
+// + name: id
+//   in: query
+//   description: UserId.
+//   required: true
+//   type: integer
+//
+// Responses:
+// 200: getUserInfoResponse
+// 400: getUserInfoBadRequestError
+// 404: getUserInfoNotFoundError
+// 500: getUserInfoInternalServerError
 
 // GetUserInfo is a handler for the get-user-info endpoint.
 func (a *Authorization) GetUserInfo(w http.ResponseWriter, r *http.Request) {
