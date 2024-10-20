@@ -9,8 +9,27 @@ services:
       mynetwork:
     environment:
       - TZ=Europe/Moscow
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  goose:
+    build:
+      dockerfile: ./db/Dockerfile
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    volumes:
+      - ./db/migrations:/migrations
+    networks:
+      mynetwork:
+
   matharena:
     build: .
+    depends_on:
+      - goose
     ports:
       - "8080:8080"
     networks:
