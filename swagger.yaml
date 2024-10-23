@@ -1,0 +1,218 @@
+basePath: /
+consumes:
+    - application/json
+definitions:
+    GenericError:
+        properties:
+            message:
+                description: The error message.
+                example: No no no mister fish you won't go into tazik
+                type: string
+                x-go-name: Message
+        title: GenericError is a generic error message returned by a server.
+        type: object
+        x-go-package: github.com/pelageech/matharena/internal/models
+    SignInResponse:
+        properties:
+            authorization:
+                description: Authorization token.
+                example: Bearer rhdfiugreuherugtherutgherutheruthyeruthyerutheuty478t8475t87845y8574y745ty57s
+                type: string
+                x-go-name: Authorization
+        title: SignInResponse is a struct that defines the response body for the sign-in endpoint.
+        type: object
+        x-go-package: github.com/pelageech/matharena/internal/models
+    getUserInfoResponse:
+        properties:
+            email:
+                type: string
+                x-go-name: Email
+            id:
+                format: int64
+                type: integer
+                x-go-name: ID
+            username:
+                type: string
+                x-go-name: Username
+        type: object
+        x-go-name: GetUserInfoResponse
+        x-go-package: github.com/pelageech/matharena/internal/models
+    signInRequest:
+        properties:
+            password:
+                description: Password of the user.
+                example: whoAmIToJudgey6458yt875yt8754ytierytiueuy
+                type: string
+                x-go-name: Password
+            username:
+                description: Username of the user.
+                example: meliponeech
+                type: string
+                x-go-name: Username
+        required:
+            - username
+            - password
+        type: object
+        x-go-name: SignInRequest
+        x-go-package: github.com/pelageech/matharena/internal/models
+    signUpRequest:
+        properties:
+            email:
+                description: Email of the user.
+                example: user@example.com
+                type: string
+                x-go-name: Email
+            password:
+                description: Password of the user.
+                example: myVerySecurePassword123
+                type: string
+                x-go-name: Password
+            username:
+                description: Username of the user.
+                example: user123
+                type: string
+                x-go-name: Username
+        required:
+            - username
+            - email
+            - password
+        type: object
+        x-go-name: SignUpRequest
+        x-go-package: github.com/pelageech/matharena/internal/handlers
+info:
+    contact:
+        email: pelageech@mail.ru
+        name: Artyom Blaginin
+    description: Documentation for MathArena API.
+    title: describes models for application.
+    version: 0.0.1
+paths:
+    /api/signin:
+        post:
+            consumes:
+                - application/json
+            operationId: SignIn
+            parameters:
+                - description: Sign in request.
+                  in: body
+                  name: request
+                  required: true
+                  schema:
+                    $ref: '#/definitions/signInRequest'
+                    description: Sign in request.
+                    type: object
+            produces:
+                - application/json
+            responses:
+                "200":
+                    $ref: '#/responses/signInOkResponse'
+                "400":
+                    $ref: '#/responses/signInBadRequestError'
+                "401":
+                    $ref: '#/responses/signInUnauthorizedError'
+                "500":
+                    $ref: '#/responses/signInInternalServerError'
+            schemes:
+                - http
+            summary: Signs in a user.
+    /api/signup:
+        post:
+            consumes:
+                - application/json
+            operationId: SignUp
+            parameters:
+                - description: Sign up request.
+                  in: body
+                  name: request
+                  required: true
+                  schema:
+                    $ref: '#/definitions/signUpRequest'
+                    description: Sign up request.
+                    type: object
+            produces:
+                - application/json
+            responses:
+                "201":
+                    $ref: '#/responses/signUpCreatedResponse'
+                "400":
+                    $ref: '#/responses/signUpBadRequestError'
+                "409":
+                    $ref: '#/responses/signUpConflictError'
+                "500":
+                    $ref: '#/responses/signUpInternalServerError'
+            schemes:
+                - http
+            summary: Creates a new user.
+    /api/user/{id}:
+        get:
+            operationId: GetUserInfo
+            parameters:
+                - description: UserId.
+                  in: query
+                  name: id
+                  required: true
+                  type: integer
+            produces:
+                - application/json
+            responses:
+                "200":
+                    description: getUserInfoResponse
+                    schema:
+                        $ref: '#/definitions/getUserInfoResponse'
+                "400":
+                    $ref: '#/responses/getUserInfoBadRequestError'
+                "404":
+                    $ref: '#/responses/getUserInfoNotFoundError'
+                "500":
+                    $ref: '#/responses/getUserInfoInternalServerError'
+            schemes:
+                - http
+            summary: Get user info.
+produces:
+    - application/json
+responses:
+    getUserInfoBadRequestError:
+        description: ""
+        schema:
+            $ref: '#/definitions/GenericError'
+    getUserInfoInternalServerError:
+        description: ""
+        schema:
+            $ref: '#/definitions/GenericError'
+    getUserInfoNotFoundError:
+        description: ""
+        schema:
+            $ref: '#/definitions/GenericError'
+    signInBadRequestError:
+        description: ""
+        schema:
+            $ref: '#/definitions/GenericError'
+    signInInternalServerError:
+        description: ""
+        schema:
+            $ref: '#/definitions/GenericError'
+    signInOkResponse:
+        description: ""
+        schema:
+            $ref: '#/definitions/SignInResponse'
+    signInUnauthorizedError:
+        description: ""
+        schema:
+            $ref: '#/definitions/GenericError'
+    signUpBadRequestError:
+        description: ""
+        schema:
+            $ref: '#/definitions/GenericError'
+    signUpConflictError:
+        description: ""
+        schema:
+            $ref: '#/definitions/GenericError'
+    signUpCreatedResponse:
+        description: ""
+    signUpInternalServerError:
+        description: ""
+        schema:
+            $ref: '#/definitions/GenericError'
+schemes:
+    - http
+swagger: "2.0"
