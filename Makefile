@@ -10,7 +10,7 @@ swagger-build:
 swagger: swagger-build
 	swagger serve .\swagger.yaml
 
-.PHONY tidy:
+.PHONY: tidy
 tidy:
 	go mod tidy
 
