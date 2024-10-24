@@ -21,11 +21,12 @@ create table if not exists game_sessions
     player_id bigint not null,
     start_time timestamp not null,
     end_time timestamp not null,
-    points smallint not null
+    points smallint not null,
+    is_finished bool not null
 );
 
 alter table game_sessions drop constraint if exists fk_player_of_session;
-alter table game_sessions add constraint fk_player_of_session foreign key (id) references players;
+alter table game_sessions add constraint fk_player_of_session foreign key (player_id) references players(id);
 
 -- +goose StatementEnd
 
