@@ -94,6 +94,7 @@ var (
 	ErrTimeIsLeft        = errors.New("time is left")
 )
 
+// Answer handles answer from the user. Checks if the session is ended before it.
 func (s *Session) Answer(answer int, timeNow time.Time) error {
 	s.updateTimeOnAnswer(timeNow)
 	// check if the user is late to answer
@@ -142,6 +143,10 @@ func (s *Session) ID() SessionID {
 
 func (s *Session) TimeLeft() time.Duration {
 	return s.timeLeft
+}
+
+func (s *Session) FinishTime() time.Time {
+	return s.finishTime
 }
 
 func (s *Session) CurrentExpression() math.ExpressionInt {

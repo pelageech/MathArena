@@ -44,6 +44,15 @@ func (ld *SessionDataLayer) CreateSession(ctx context.Context, timeStart time.Du
 
 func (ld *SessionDataLayer) Answer(ctx context.Context, sessionID game.SessionID, answer, userID int, timeNow time.Time) (*game.Session, error) {
 	s, err := ld.activeSessions.Get(sessionID, timeNow)
+	if errors.Is(err, game.ErrTimeIsLeft) {
+		if s.UserID() != userID {
+			ld.logger.Infof("%v %v", s.UserID(), userID)
+			return nil, errors.New("invalid session")
+		}
+
+		_ = ld.Stop(ctx, sessionID, userID, s.FinishTime())
+		return nil, fmt.Errorf("sid %v: already stopped", sessionID)
+	}
 	if err != nil {
 		return nil, fmt.Errorf("get session %v: %w", sessionID, err)
 	}
@@ -57,7 +66,7 @@ func (ld *SessionDataLayer) Answer(ctx context.Context, sessionID game.SessionID
 	if errors.Is(err, game.ErrAnswerIsIncorrect) {
 		ld.logger.Debugf("sid: %v, ans: %v: answer is incorrect", sessionID, answer)
 	} else if err != nil {
-		_ = ld.Stop(ctx, sessionID, userID, timeNow)
+		_ = ld.Stop(ctx, sessionID, userID, s.FinishTime())
 		return nil, fmt.Errorf("answer: %w", err)
 	}
 
@@ -66,9 +75,6 @@ func (ld *SessionDataLayer) Answer(ctx context.Context, sessionID game.SessionID
 
 func (ld *SessionDataLayer) Stop(ctx context.Context, sessionID game.SessionID, userID int, timeNow time.Time) error {
 	s, err := ld.activeSessions.Get(sessionID, timeNow)
-	if errors.Is(err, game.ErrTimeIsLeft) {
-		return fmt.Errorf("sid %v: already stopped", sessionID)
-	}
 	if err != nil {
 		return fmt.Errorf("get session %v: %w", sessionID, err)
 	}
