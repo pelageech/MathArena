@@ -9,13 +9,18 @@ import (
 )
 
 func (p *PSQLDatabase) CreateSession(ctx context.Context, userId int, startTime time.Time) (game.SessionID, error) {
+	_, _, err := p.GetUserInfo(ctx, userId)
+	if err != nil {
+		return -1, fmt.Errorf("%v: %w", userId, ErrUserNotFound)
+	}
+
 	row := p.QueryRow(ctx, `INSERT INTO game_sessions(player_id, start_time, end_time, points, is_finished) VALUES 
                               ($1, $2, to_timestamp(0), 0, false) RETURNING id`,
 		userId,
 		startTime,
 	)
 	var id int
-	err := row.Scan(&id)
+	err = row.Scan(&id)
 	if err != nil {
 		return 0, fmt.Errorf("error creating session: %w", err)
 	}
@@ -32,7 +37,8 @@ func (p *PSQLDatabase) FinishSession(ctx context.Context, userID int, id game.Se
 		return errors.New("forbidden operation")
 	}
 
-	_, err = p.Exec(ctx, `UPDATE game_sessions SET is_finished = true WHERE id = $1`,
+	_, err = p.Exec(ctx, `UPDATE game_sessions SET is_finished = true, end_time = $1 WHERE id = $2`,
+		finishTime,
 		id,
 	)
 	if err != nil {
