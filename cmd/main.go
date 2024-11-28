@@ -107,11 +107,13 @@ func main() {
 
 	// Set up a datalayer
 	dl := data.New(psqlDB, saltLength, duration, []byte(tokenSignKey))
+	sessionDL := data.NewSessionDataLayer(psqlDB, l)
 
 	// Set up error writer
 	ew := ioutil.JSONErrorWriter{Logger: l}
 
 	authHandlers := handlers.NewAuthorization(dl, ew, l)
+	sessionHandlers := handlers.NewGameSessionsHandler(sessionDL, ew, l)
 
 	// Set up routes
 	r.Route("/api", func(r chi.Router) {
@@ -119,6 +121,11 @@ func main() {
 		r.Options("/signup", authHandlers.SignUp)
 		r.Post("/signin", authHandlers.SignIn)
 		r.Get("/user/{id}", authHandlers.GetUserInfo)
+		r.Route("/session", func(r chi.Router) {
+			r.Post("/create", sessionHandlers.CreateSession)
+			r.Post("/answer", sessionHandlers.Answer)
+			r.Post("/finish", sessionHandlers.Stop)
+		})
 	})
 
 	// create a new server

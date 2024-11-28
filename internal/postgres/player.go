@@ -12,9 +12,9 @@ var ErrUserNotFound = fmt.Errorf("user not found")
 // GetUserInfo returns username, email and error by given userId.
 func (d *PSQLDatabase) GetUserInfo(ctx context.Context, userId int) (username string, email string, err error) {
 	row := d.QueryRow(ctx, `
-SELECT username, email FROM players WHERE id = :id
+SELECT username, email FROM players WHERE id = $1
 `,
-		sql.Named("id", userId))
+		userId)
 
 	if err := row.Scan(&username, &email); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -32,10 +32,9 @@ func (d *PSQLDatabase) HasEmailOrUsername(ctx context.Context, username, email s
 	var count int
 
 	row := d.QueryRow(ctx, `
-SELECT COUNT(*) FROM players WHERE username = :username OR email = :email
+SELECT COUNT(*) FROM players WHERE username = $1 OR email = $2
 `,
-		sql.Named("username", username),
-		sql.Named("email", email))
+		username, email)
 
 	if err := row.Scan(&count); err != nil {
 		return false, fmt.Errorf("unable to count rows in HasEmailOrUsername: %w", err)
@@ -51,11 +50,9 @@ SELECT COUNT(*) FROM players WHERE username = :username OR email = :email
 func (d *PSQLDatabase) InsertUser(ctx context.Context, username, hashedPassword, email string) (id int, err error) {
 	row := d.QueryRow(ctx, `
 INSERT INTO players (email, username, hashed_password)
-VALUES (:email, :username, :hashed_password) RETURNING id
+VALUES ($1, $2, $3) RETURNING id
 `,
-		sql.Named("email", email),
-		sql.Named("username", username),
-		sql.Named("hashed_password", hashedPassword))
+		email, username, hashedPassword)
 
 	if err := row.Scan(&id); err != nil {
 		return 0, fmt.Errorf("unable to insert user in InsertUser: %w", err)
@@ -67,9 +64,9 @@ VALUES (:email, :username, :hashed_password) RETURNING id
 // GetHashedPassword returns salt and hash for the given username.
 func (d *PSQLDatabase) GetHashedPassword(ctx context.Context, username string) (hashedPassword string, err error) {
 	row := d.QueryRow(ctx, `
-SELECT hashed_password FROM players WHERE username = :username
+SELECT hashed_password FROM players WHERE username = $1
 `,
-		sql.Named("username", username))
+		username)
 
 	if err := row.Scan(&hashedPassword); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -85,9 +82,9 @@ SELECT hashed_password FROM players WHERE username = :username
 // GetUserID returns user id for the given username.
 func (d *PSQLDatabase) GetUserID(ctx context.Context, username string) (userId int64, err error) {
 	row := d.QueryRow(ctx, `
-SELECT id FROM players WHERE username = :username
+SELECT id FROM players WHERE username = $1
 `,
-		sql.Named("username", username))
+		username)
 
 	if err := row.Scan(&userId); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
