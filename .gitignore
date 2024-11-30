@@ -1,5 +1,39 @@
 # Created by https://www.toptal.com/developers/gitignore/api/go,goland
 # Edit at https://www.toptal.com/developers/gitignore?templates=go,goland
+### React #######
+
+# dependencies
+node_modules
+math_arena_app/.pnp
+math_arena_app/.pnp.js
+
+# lock files
+package-lock.json
+package.json
+
+# testing
+math_arena_app/coverage
+
+# production
+math_arena_app/build
+
+# misc
+math_arena_app/.DS_Store
+math_arena_app/.env.local
+math_arena_app/.env.development.local
+math_arena_app/.env.test.local
+math_arena_app/.env.production.local
+
+# log files
+math_arena_app/npm-debug.log*
+math_arena_app/yarn-debug.log*
+math_arena_app/yarn-error.log*
+
+# IDE settings
+.idea
+
+
+
 
 ### Go ###
 # If you prefer the allow list template instead of the deny list, see community template:
