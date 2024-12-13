@@ -1,45 +1,139 @@
 .home-container {
+    font-family: google sans, sans-serif;
     padding: 20px;
+    text-align: center;
 }
 
 .home-title {
     font-size: 2rem;
-    text-align: center;
     margin-bottom: 20px;
 }
 
-.create-game-button, .logout-button, .submit-answer-button {
+/* Centering the game creation and logout buttons */
+.center-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.create-game-button, .logout-button{
     display: block;
-    margin: 20px auto;
+    margin: 10px 0;
     padding: 10px 20px;
     font-size: 1.2rem;
     cursor: pointer;
+    width: 200px;
+    border-radius: 5px;
 }
 
+
+/* Styling for the answer input field */
+.input_answer {
+    width: 80%; /* Makes the input field take most of the container's width */
+    padding: 15px 20px; /* Increase padding to make the input larger */
+    font-size: 1.5rem; /* Increase font size for better readability */
+    border: 2px solid #007bff; /* Blue border for a better look */
+    border-radius: 10px; /* Round the corners */
+    margin-bottom: 20px; /* Adds space below the input field */
+    text-align: center; /* Centers the text inside the input */
+    box-sizing: border-box; /* Ensures padding is included in the width */
+    background-color: #f8f9fa; /* Light background color */
+    color: #333; /* Text color */
+}
+
+.input_answer:focus {
+    border-color: #28a745; /* Change border color on focus (green) */
+    outline: none; /* Remove default outline */
+    background-color: #ffffff; /* Change background to white when focused */
+}
+
+.input_answer::placeholder {
+    color: #888; /* Lighter color for the placeholder text */
+    font-size: 1.2rem; /* Slightly larger font for placeholder */
+}
+
+
+
+.submit-answer-btn, .finish-game-btn {
+    display: block;
+    margin: 20px auto; /* Centers the buttons horizontally */
+    padding: 8px 20px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    width: 200px;
+    border-radius: 5px;
+}
+/* Additional styling for button states */
 .create-game-button:disabled {
     background-color: #ccc;
 }
 
-.game-popup {
+/* Game Popup */
+.game-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
 }
 
+.game-popup {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 300px;
+}
+
+/* Error and Score Modal Styling */
 .error-message {
     color: red;
     font-size: 1rem;
-    text-align: center;
+    margin-top: 10px;
 }
 
-.logout-button {
-    background-color: #ff4d4d;
-    color: white;
-    border: none;
-    margin-top: 20px;
+.score-modal {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+
+.score-modal button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
     cursor: pointer;
+}
+
+.score-modal button:first-of-type {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.score-modal button:first-of-type:hover {
+    background-color: #45a049;
+}
+
+.score-modal button:last-of-type {
+    background-color: #f44336;
+    color: white;
+}
+
+.score-modal button:last-of-type:hover {
+    background-color: #e53935;
 }

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import './styles/Register.css';
-
 
 function Register() {
     const [formData, setFormData] = useState({
@@ -25,17 +24,14 @@ function Register() {
         }));
     };
 
-// Handle form submission with email validation
+    // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
         setSuccess(false);
         setLoading(true);
 
-        // Email validation regex pattern (basic validation)
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-
-        // Check if email is valid
         if (!emailRegex.test(formData.email)) {
             setError('Please enter a valid email address');
             setLoading(false);
@@ -43,45 +39,26 @@ function Register() {
         }
 
         try {
-            // Sending POST request to the API endpoint
             const response = await axios.post('http://localhost:8080/api/signup', formData);
             console.log('Registration successful:', response.data);
-            setSuccess(true);  // Set success message if registration is successful
-
-            // Redirect to login page after 2 seconds
+            setSuccess(true);
             setTimeout(() => {
-                navigate('/login'); // Redirect to login page
+                navigate('/login');
             }, 2000);
         } catch (err) {
             console.error('Error during registration:', err.response?.data || err.message);
-            setError(err.response?.data?.message || 'Something went wrong');  // Set error message if API fails
+            setError(err.response?.data?.message || 'Something went wrong');
         } finally {
-            setLoading(false);  // Stop loading spinner after the request is done
+            setLoading(false);
         }
     };
-
-
-
-
-
-
-
 
     return (
         <div className="register-container">
             <h2 className="register-title">Register</h2>
-
-            {/* Success message */}
-            {success && (
-                <p className="success-message">Account created successfully! You can now log in.</p>
-            )}
-
-            {/* Error message */}
+            {success && <p className="success-message">Account created successfully! You can now log in.</p>}
             {error && <p className="error-message">{error}</p>}
-
-            {/* Loading state */}
             {loading && <p className="loading-message">Creating account...</p>}
-
             <form className="register-form" onSubmit={handleSubmit}>
                 <div className="input-group">
                     <label htmlFor="username" className="input-label">Username:</label>
@@ -126,6 +103,12 @@ function Register() {
                     {loading ? 'Creating...' : 'Register'}
                 </button>
             </form>
+            <p className="redirect-message">
+                Already have an account?{' '}
+                <button onClick={() => navigate('/login')} className="redirect-button">
+                    Log In
+                </button>
+            </p>
         </div>
     );
 }

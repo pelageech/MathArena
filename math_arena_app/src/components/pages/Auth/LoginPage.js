@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import './styles/Login.css';
 
 function Login() {
@@ -11,9 +11,9 @@ function Login() {
 
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false); 
     const navigate = useNavigate();
 
-    // Handle input change
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -22,24 +22,19 @@ function Login() {
         }));
     };
 
-    // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
         setLoading(true);
 
         try {
-            // Sending POST request to the API endpoint
             const response = await axios.post('http://localhost:8080/api/signin', formData);
             console.log('Login successful:', response.data);
 
-            // Save user data (e.g., user_id) to localStorage
-            localStorage.setItem('userId', response.data.user_id);
+            localStorage.setItem('authToken', response.data.authorization);  
+            localStorage.setItem('userId', response.data.user_id);  
 
-            // Redirect to home page after successful login
-            setTimeout(() => {
-                navigate('/home');
-            }, 1000);
+            setIsLoggedIn(true);  
         } catch (err) {
             console.error('Error during login:', err.response?.data || err.message);
             setError(err.response?.data?.message || 'Invalid username or password');
@@ -47,6 +42,19 @@ function Login() {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            navigate('/home');
+        }
+    }, [isLoggedIn, navigate]);
+
+    useEffect(() => {
+        const token = localStorage.getItem('authToken');
+        if (token) {
+            navigate('/home');
+        }
+    }, [navigate]);
 
     return (
         <div className="login-container">
@@ -87,6 +95,10 @@ function Login() {
                     {loading ? 'Logging in...' : 'Log In'}
                 </button>
             </form>
+
+            <div className="redirect-message">
+                <p>Don't have an account? <a href="/signup" className="redirect-button">Sign Up</a></p>
+            </div>
         </div>
     );
 }
