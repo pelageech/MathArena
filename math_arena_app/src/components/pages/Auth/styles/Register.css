@@ -1,0 +1,129 @@
+/* Global styles */
+body {
+    font-family: google sans, sans-serif;
+    background-color: #f4f7fc;
+    margin: 0;
+    padding: 0;
+}
+
+/* Register Page Styling */
+.register-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.register-title {
+    text-align: center;
+    color: #333;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.success-message {
+    color: green;
+    text-align: center;
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+
+.error-message {
+    color: red;
+    text-align: center;
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+
+/* Form Styling */
+.register-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-label {
+    font-size: 0.9rem;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.input-field {
+    font-family: google sans, sans-serif;
+    width: 95%; /* Slightly less than the container's width */
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    color: #555;
+    box-sizing: border-box; /* Ensures padding and border are included in the width */
+    transition: border-color 0.3s ease;
+    margin: 0 auto; /* Center the input field within the container */
+}
+
+
+.input-field:focus {
+    border-color: #333;
+    outline: none;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+.submit-button {
+    color: white; /* Text color */
+    background-color: black; /* Solid black button */
+    border: 1px solid black; /* Optional: Border in black */
+    padding: 12px;
+    background-color: #000;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+    background-color: #333;
+}
+
+.submit-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Redirect message styling */
+.redirect-message {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* Redirect link styling */
+.redirect-button {
+    background: none;
+    border: none;
+    color: #007bff;
+    text-decoration: underline;
+    font-size: 1rem;
+    font-family: inherit;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: none;
+
+}
+
+.redirect-button:hover {
+    color: #0056b3;
+    text-decoration: none;
+    font-size:bold;
+  
+}
