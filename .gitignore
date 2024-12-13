@@ -7,10 +7,6 @@ node_modules
 math_arena_app/.pnp
 math_arena_app/.pnp.js
 
-# lock files
-package-lock.json
-package.json
-
 # testing
 math_arena_app/coverage
 
